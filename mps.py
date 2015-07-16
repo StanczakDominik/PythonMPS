@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def f(r):
-    return np.exp(-r**2)
+print("Funkcja: e^(-x^2-y)")
+def f(x,y):
+    return np.exp(-x**2-y)
+def fprime(x,y):
+    return -2*x*f(x,y), -f(x,y)
 
 def AnglesToCartesian(angles, radiuses=1):
     return radiuses*np.cos(angles), radiuses*np.sin(angles)
@@ -20,15 +23,62 @@ ylines = np.vstack((np.zeros_like(y), y))
 plt.plot(xlines, ylines, "k--", label="Regions")
 
 #plot points
+maxradius=0.1
+minradius=0
 RandomAngles = np.arange(0,Circle,AngleRange)+AngleRange*np.random.random(NumberOfRegions)
-RandomRadii=2*np.random.random(NumberOfRegions)+0
+RandomRadii=(maxradius-minradius)*np.random.random(NumberOfRegions)+minradius
 xpoint, ypoint = AnglesToCartesian(RandomAngles, RandomRadii)
 xpointlines = np.vstack((np.zeros_like(xpoint), xpoint))
 ypointlines = np.vstack((np.zeros_like(ypoint), ypoint))
-plt.plot(xpointlines, ypointlines, "bo-")
+plt.plot(xpointlines, ypointlines, "bo-", label="Wylosowane punkty")
 
 #get function values
-FunctionValues=f(RandomRadii)
+R = np.sum(RandomRadii)/NumberOfRegions #scaling radius
+alpha_R=R/RandomRadii #scaling
+
+xpointScaled = xpoint*alpha_R
+ypointScaled = ypoint*alpha_R
+
+plt.plot(xpointScaled, ypointScaled, "ro", label="Przeskalowane punkty")
+
+FunctionValuesScaled=f(xpointScaled, ypointScaled)
+FunctionAtZero=f(0,0)
 
 
+alpha1=np.sum(xpointScaled**2)
+alpha2=np.sum(xpointScaled*ypointScaled)
+alpha3=np.sum(ypointScaled**2)
+delta1=np.sum((FunctionValuesScaled-FunctionAtZero)*xpointScaled)
+delta2=np.sum((FunctionValuesScaled-FunctionAtZero)*ypointScaled)
+
+a = -(delta1*alpha3-delta2*alpha2)/(alpha2**2-alpha1*alpha3) #d/dx
+b = -(delta2*alpha1-delta1*alpha2)/(alpha2**2-alpha1*alpha3) #d/dy
+
+print("Wyniki analityczne")
+print("%.4f, %.4f" %fprime(0,0))
+
+print("Wartosci pochodnych ze skalowaniem")
+print("%.4f, %.4f" %(a,b))
+print("Roznice")
+print("%.4f, %.4f" %(abs(a-fprime(0,0)[0]), abs(b-fprime(0,0)[1])))
+
+FunctionValues=f(xpoint, ypoint)
+
+alpha1=np.sum(xpoint**2)
+alpha2=np.sum(xpoint*ypoint)
+alpha3=np.sum(ypoint**2)
+delta1=np.sum((FunctionValues-FunctionAtZero)*xpoint)
+delta2=np.sum((FunctionValues-FunctionAtZero)*ypoint)
+
+a = -(delta1*alpha3-delta2*alpha2)/(alpha2**2-alpha1*alpha3) #d/dx
+b = -(delta2*alpha1-delta1*alpha2)/(alpha2**2-alpha1*alpha3) #d/dy
+
+print("Wartosci pochodnych bez skalowania")
+print("%.4f, %.4f" %(a,b))
+print("Roznice")
+print("%.4f, %.4f" %(abs(a-fprime(0,0)[0]), abs(b-fprime(0,0)[1])))
+
+plt.xlim(-maxradius, maxradius)
+plt.ylim(-maxradius, maxradius)
+plt.grid()
 plt.show()
