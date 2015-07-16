@@ -1,0 +1,11 @@
+Funkcja: e^(-x^2-y)
+Wyniki analityczne
+0.0000, -1.0000
+Wartosci pochodnych ze skalowaniem
+0.0393, -0.9426
+Roznice
+0.0393, 0.0574
+Wartosci pochodnych bez skalowania
+-0.1403, -0.8908
+Roznice
+0.1403, 0.1092

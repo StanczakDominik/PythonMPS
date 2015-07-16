@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+output=open("./output.dat", 'w+')
+
 print("Funkcja: e^(-x^2-y)")
+print("Funkcja: e^(-x^2-y)", file=output)
 def f(x,y):
     return np.exp(-x**2-y)
 def fprime(x,y):
@@ -23,7 +26,7 @@ ylines = np.vstack((np.zeros_like(y), y))
 plt.plot(xlines, ylines, "k--", label="Regions")
 
 #plot points
-maxradius=0.1
+maxradius=1
 minradius=0
 RandomAngles = np.arange(0,Circle,AngleRange)+AngleRange*np.random.random(NumberOfRegions)
 RandomRadii=(maxradius-minradius)*np.random.random(NumberOfRegions)+minradius
@@ -62,6 +65,14 @@ print("%.4f, %.4f" %(a,b))
 print("Roznice")
 print("%.4f, %.4f" %(abs(a-fprime(0,0)[0]), abs(b-fprime(0,0)[1])))
 
+print("Wyniki analityczne", file=output)
+print("%.4f, %.4f" %fprime(0,0), file=output)
+
+print("Wartosci pochodnych ze skalowaniem", file=output)
+print("%.4f, %.4f" %(a,b), file=output)
+print("Roznice", file=output)
+print("%.4f, %.4f" %(abs(a-fprime(0,0)[0]), abs(b-fprime(0,0)[1])), file=output)
+
 FunctionValues=f(xpoint, ypoint)
 
 alpha1=np.sum(xpoint**2)
@@ -78,7 +89,15 @@ print("%.4f, %.4f" %(a,b))
 print("Roznice")
 print("%.4f, %.4f" %(abs(a-fprime(0,0)[0]), abs(b-fprime(0,0)[1])))
 
+
+print("Wartosci pochodnych bez skalowania", file=output)
+print("%.4f, %.4f" %(a,b), file=output)
+print("Roznice", file=output)
+print("%.4f, %.4f" %(abs(a-fprime(0,0)[0]), abs(b-fprime(0,0)[1])), file=output)
+
 plt.xlim(-maxradius, maxradius)
 plt.ylim(-maxradius, maxradius)
 plt.grid()
+plt.savefig("plot.png")
 plt.show()
+plt.clf()
